@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { useNavigate } from "react-router-dom";
 
 
 function CheckToken({server, onChangeToken}) {
@@ -8,6 +9,7 @@ function CheckToken({server, onChangeToken}) {
     const [message, SetMessage] = useState('');
     const [isTokenValid, setIsTokenValid] = useState(false);
     const [uid, setUid] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
       console.log(`驗證成功, UID: ${uid}`, `isTokenValid: ${isTokenValid}`);
@@ -37,6 +39,7 @@ function CheckToken({server, onChangeToken}) {
           SetMessage(successMessage);
           setUid(res.data.uid)
           onChangeToken(token);
+          navigate('../todo')
         }
       } catch (error) {
         const errorMessage = `驗證失敗, 詳細訊息: ${error.message}`;
