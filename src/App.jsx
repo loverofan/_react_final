@@ -20,15 +20,18 @@ function App() {
   const server = 'https://todolist-api.hexschool.io'; //壞惹? 995
   // const server = 'https://todolist-api.hexschool.io/doc';
 
-
+  const [userName, setUserName] = useState('')
+  const [token, setToken] = useState('')
   const {VITE_APP_HOST} = import.meta.env;
 
-  // console.log(import.meta.env);
   // console.log("VITE_APP_HOST===>", import.meta.env);
 
-  const [token, setToken] = useState('')
   const handleChangeToken = (newToken) => {
     return setToken(newToken)
+  }
+
+  const onUserNameChange = (user) => {
+    return setUserName(user)
   }
 
   return (
@@ -37,11 +40,11 @@ function App() {
       <div className="bg-yellow">
         <Routes>
         <Route path='/' element={<Home />} >
-          <Route path='/' element={<SignIn server={server} onChangeToken={handleChangeToken} />} />
+          <Route path='/' element={<SignIn server={server} onChangeToken={handleChangeToken} onUserNameChange={onUserNameChange}/>} />
           <Route path='/sign_up' element={<SignUp server={server} />} />
         </Route>
 
-          <Route path='/auth' element={<Auth />} >
+          <Route path='/auth' element={<Auth server={server} token={token} onTokenUpdate={handleChangeToken} userName={userName}/>} >
           <Route path='/auth/check_token' element={<CheckToken server={server} onChangeToken={handleChangeToken} />} />
             <Route path='/auth/todo' element={<TodoList server={server} token={token} />} />
           </Route>

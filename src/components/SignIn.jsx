@@ -4,16 +4,16 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
 
 
-function SignIn({server, onChangeToken}) {
+function SignIn({server, onChangeToken, onUserNameChange }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
     const [message, SetMessage] = useState('');
+    const [userName, setUserName] = useState('');
 
     const [hasSignIn, setHasSignIn] = useState(false);
     const [isLoading, setisLoading] = useState(false) // status
-
 
     const signInAPI = `${server}/users/sign_in`;
     const navigate = useNavigate();
@@ -38,11 +38,14 @@ function SignIn({server, onChangeToken}) {
         try {
             setisLoading(true);
             const res = await axios.post((signInAPI), signInData);
+            console.log("res====>", res);
 
             const successMessage = res.data.status ? '登入成功!' : '登入失敗';
-            console.log("token===>", res.data.token);
+            // console.log("token===>", res.data.token);
             setToken(res.data.token)
             SetMessage(successMessage);
+            onUserNameChange(res.data.nickname)
+            setUserName(res.data.nickname);
             console.log(successMessage);
             setHasSignIn(true);
 
@@ -50,8 +53,8 @@ function SignIn({server, onChangeToken}) {
             document.cookie = `hexschoolToken=${res.data.token}`;
             setTimeout(() => {
                 setisLoading(false)
+                alert("登入成功，頁面跳轉中...")
             }, 500)
-            // navigate('../check_token');
             navigate('../auth/todo');
 
 
@@ -93,7 +96,8 @@ function SignIn({server, onChangeToken}) {
 
 SignIn.propTypes = {
     server: PropTypes.string, 
-    onChangeToken: PropTypes.func
+    onChangeToken: PropTypes.func,
+    onUserNameChange: PropTypes.func
 }
 
 

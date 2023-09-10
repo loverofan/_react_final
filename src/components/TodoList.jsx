@@ -37,7 +37,7 @@ function TodoList({server, token}) {
                     headers: {Authorization: cookieValue}
                 }
             )
-            // console.log("get todo res===>", res.data.data);
+            console.log("get todo res===>", res);
             const todoData = res.data.data;
             setTodos(todoData);
             
@@ -213,7 +213,9 @@ function TodoList({server, token}) {
                         }
                         </ul>
                         <div className="todoList_statistics">
-                            <p>{finishTodo.length} 個已完成項目</p>
+                            {todos.length == 0 ? <h2>尚無待辦事項</h2> : <p> {unFinishTodo.length} 尚待完成項目</p> }
+                            {/* <p>{todos.length == 0 ? '尚無待辦事項' : '有'}</p> */}
+                            {/* <p>{finishTodo.length} 個已完成項目</p> */}
                             <a onClick={clearCompletedTodos}>清除已完成項目</a>
                         </div>
                     </div>

@@ -20,6 +20,7 @@ function SignOut({server, token, onTokenUpdate}) {
             
             SetMessage(successMessage);
             onTokenUpdate('');
+            document.cookie = '';
         } catch (error) {
             const errorMessage = `驗證失敗, 詳細訊息: ${error.message}`;
             SetMessage(errorMessage);

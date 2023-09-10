@@ -50,8 +50,12 @@ function SignUp({server}) {
         
       } catch (error) {
         console.warn(error.response.data); // check error in console
+        console.log(error.response);
         const errorMessage = `註冊失敗: ${error.message}`;
+        const alertMessage = JSON.stringify(error.response.data.message)
+        alert(alertMessage);
         SetMessage(errorMessage);
+        
       }
     }
 
