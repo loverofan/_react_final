@@ -13,9 +13,9 @@ function NotFound() {
         </div>
         <div className="conatiner vhContainer">
                 <h1 className="error-hints">Opps, sorry, something has gone wrong.</h1>
-                <h1 className="error-hints">Please follow one of these links to get back on track:</h1>
+                <h1 className="error-hints">Please follow this link to get back on track:</h1>
 
-                <a className="error-hints" href="/#">Back to Sign in page</a>
+                <a className="error-hints" href="/_react_final">Back to Sign in page</a>
         </div>
 
         </>
