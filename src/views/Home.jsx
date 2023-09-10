@@ -17,9 +17,9 @@ function Home() {
             <div className="conatiner loginPage vhContainer">
                 <div className="navbar">
                     <a href="#">
-                        <img src="../public/images/online-todo-list-title.png" alt="" />
+                        <img src="images/online-todo-list-title.png" alt="" />
                     </a>
-                    <img src="../public/images/todo-bg.png" alt="" />
+                    <img src="images/todo-bg.png" alt="" />
                 </div>
                 <Outlet />
 

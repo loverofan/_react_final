@@ -38,15 +38,12 @@ function SignIn({server, onChangeToken, onUserNameChange }) {
         try {
             setisLoading(true);
             const res = await axios.post((signInAPI), signInData);
-            console.log("res====>", res);
 
             const successMessage = res.data.status ? '登入成功!' : '登入失敗';
-            // console.log("token===>", res.data.token);
             setToken(res.data.token)
             SetMessage(successMessage);
             onUserNameChange(res.data.nickname)
             setUserName(res.data.nickname);
-            console.log(successMessage);
             setHasSignIn(true);
 
             onChangeToken(token);

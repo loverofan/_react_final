@@ -13,8 +13,6 @@ function Auth({server, token, onTokenUpdate, userName}) {
     const signOutAPI = `${server}/users/sign_out`;
     const navigate = useNavigate();
 
-    console.log("userName====>", userName);
-
     const signOut = async() => {
         try {
             const res = await axios.post(
@@ -40,7 +38,7 @@ function Auth({server, token, onTokenUpdate, userName}) {
     return (
         <>  
             <nav>
-                <a href="#"><img src="../public/images/online-todo-list-title.png" alt="" /></a>
+                <a href="#"><img src="images/online-todo-list-title.png" alt="" /></a>
                 
                 <ul>
                     <li className="todo_sm"><a href="#"><span>{userName} 的待辦事項</span></a></li>

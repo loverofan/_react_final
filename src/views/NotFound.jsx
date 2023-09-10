@@ -1,16 +1,23 @@
-
-
+import { useNavigate } from "react-router-dom";
 
 function NotFound() {
+
+    const navagite = useNavigate()
+
     return (
         <>
-        <h1>
-            Sorry, something has gone wrong.
-            {/* Please follow one of these links to get back on track: */}
-        </h1>
-        <h1>
-            404 Page!
-        </h1>
+        <div className="navbar">
+            <a href="#">
+                <img src="images/online-todo-list-title.png" alt="" />
+            </a>
+        </div>
+        <div className="conatiner vhContainer">
+                <h1 className="error-hints">Opps, sorry, something has gone wrong.</h1>
+                <h1 className="error-hints">Please follow one of these links to get back on track:</h1>
+
+                <a className="error-hints" href="/#">Back to Sign in page</a>
+        </div>
+
         </>
     )
 }
