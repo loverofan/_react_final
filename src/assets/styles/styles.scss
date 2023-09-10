@@ -384,6 +384,12 @@ nav ul a span {
   }
 }
 
+.todoList_Content .fa-plus {
+  color: white;
+  list-style: none;
+  cursor: pointer;
+}
+
 .inputBox {
   width: 100%;
   display: -webkit-box;
@@ -427,6 +433,12 @@ nav ul a span {
   border-radius: 10px;
   -webkit-box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+  // width: 80vw;
+  margin: 0 auto;
+  padding: 20px;
+
+  // display: flex;
+  width: 80vw;
 }
 
 .todoList_list .todoList_tab {

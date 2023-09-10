@@ -7,30 +7,48 @@ function TodoList({server, token}) {
 
     const [todos, setTodos] = useState('');
     const [newTodo, setNewTodo] = useState('');
+    const [selectedTab, setSelectedTab] = useState("全部");
+
+    const [unFinishTodo, setUnFinishTodo] = useState('');
+    const [finishTodo, setFinishTodo] = useState('');
     const [todoEdit, setTodoEdit] = useState('');
+    const [cookieValue, setCookieValue] = useState('');
 
     const todosAPI = `${server}/todos`;
     const getToDoAPI = `${server}/todos`;
     const addToDoAPI = `${server}/todos`;
 
+    useEffect(() => {
+        const newCookie = document.cookie
+          .split(';')
+          .find((row) => row.startsWith('hexschoolToken'))
+          ?.split('=')[1];
+          setCookieValue(newCookie)
+          console.log("cookieValue===>", newCookie);
+      }, []);
 
-    // if (token) {
-    //     console.log("有token")
-    // } else {
-    //     console.log("沒token")
+    useEffect(() => {
+        getTodo();
+    }, [cookieValue])
 
     const getTodo = async () => {
         try {
             const res = await axios.get(getToDoAPI, {
-                    headers: {Authorization: token}
+                    headers: {Authorization: cookieValue}
                 }
             )
-            console.log("get todo res===>", res);
-            // console.log("get todo red===>", res.data.data);
-            setTodos(res.data.data)
-            setNewTodo('');
+            // console.log("get todo res===>", res.data.data);
+            const todoData = res.data.data;
+            setTodos(todoData);
+            
+            const unFinish = todoData.filter((todo) => todo.status === false);
+            const finished = todoData.filter((todo) => todo.status === true);
+
+            setUnFinishTodo(unFinish);
+            setFinishTodo(finished);
+
         } catch (error) {
-            console.log("get to do error===>", error);
+            // console.log("get to do error===>", error);
         }
     }
     
@@ -42,7 +60,7 @@ function TodoList({server, token}) {
         try {
             const res = await axios.post(addToDoAPI, todoContent, 
                 {
-                    headers: {Authorization: token}
+                    headers: {Authorization: cookieValue}
                 },
             )
             console.log("add to do res: ", res);
@@ -57,7 +75,7 @@ function TodoList({server, token}) {
         const deleteAPI = `${todosAPI}/${id}`;
         try {
             const res = await axios.delete(deleteAPI, {
-                headers: {Authorization: token}
+                headers: {Authorization: cookieValue}
             });
 
             console.log('delete res===>', res);
@@ -76,7 +94,7 @@ function TodoList({server, token}) {
         try {
             await axios.put(toDoAPI, todo, {
                 headers: {
-                  Authorization: token,
+                  Authorization: cookieValue,
                 },
             });
             
@@ -88,14 +106,13 @@ function TodoList({server, token}) {
             ...todoEdit,
             [id]: ''
         })
-        
     }
 
     const toggleStatus = async(id) => {
         const toggleAPI = `${todosAPI}/${id}/toggle`;
         try {
             const res = await axios.patch(toggleAPI, {}, {
-                headers: {Authorization: token}
+                headers: {Authorization: cookieValue}
             });
             console.log('status res===>', res);
         } catch (error) {
@@ -105,46 +122,104 @@ function TodoList({server, token}) {
         getTodo();
     }
 
-//    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiItTmRzTHZrczF3MjlZcG53ZVo4QSIsIm5pY2tuYW1lIjoiMTExMjIyIiwiaWF0IjoxNjk0MjM5NTM3LCJleHAiOjE2OTQ0OTg3Mzd9.hdTpdzK2BpybYyKPKFjxUUAl7BqAZjYjp7U91kE0QtY
+    const clearCompletedTodos = async () => {
+        const completedTodos = todos.filter((todo) => todo.status === true);
+    
+        if (completedTodos.length === 0) {
+            alert("沒有已完成的項目需要清除。");
+            return;
+        }
+    
+        const completedTodoIds = completedTodos.map((todo) => todo.id);
+    
+        try {
+            await Promise.all(completedTodoIds.map(async (id) => {
+                const deleteAPI = `${todosAPI}/${id}`;
+                await axios.delete(deleteAPI, {
+                    headers: { Authorization: cookieValue },
+                });
+            }));
+            console.log('已完成的項目已成功清除。');
+        } catch (error) {
+            console.log('清除已完成項目時發生錯誤：', error);
+        }
 
-    // function checkTodo() {
-    //     // console.log("newTodo===>", newTodo);
-    // }
+        getTodo();
+    }
 
     return(
-        <>
-            <h1>Todo list</h1>
-            <input type="text" value={newTodo} placeholder="Add new todo" 
-                   onChange={(e) => setNewTodo(e.target.value)}/>
-            <button onClick={addTodo}>Add todo</button>
-            <button onClick={getTodo}>Get todo</button>
-                {todos && todos.map((todo, index) => (
-                    <ul key={index}>
-                        <li >
-                            {todo.content} 
-                            {todo.status ? '完成' : '未完成'} 
-                            | 
-                            {todoEdit[todo.id]
-                        }
-                        <input type="text" placeholder="更新資料" onChange={(e) => {
-                            const newTodoEdit = {
-                                ...todoEdit
-                            }
-                            newTodoEdit[todo.id] = e.target.value;
-                            setTodoEdit(newTodoEdit)
-                        }}/>
-                            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-                            <button onClick={() => updateTodo(todo.id)}>Update</button>
-                            <button onClick={() => toggleStatus(todo.id)}>Toggle status</button>
+        <>  
+            <div className="conatiner todoListPage vhContainer">
+                <div className="todoList_Content">
+                    <div className="inputBox">
+                        <input type="text" value={newTodo} placeholder="Add new todo" 
+                            onChange={(e) => setNewTodo(e.target.value)}/>
+                        <a onClick={addTodo}>
+                            <li className="fa fa-plus">+</li>
+                        </a>
+
+                    </div>
+                </div>   
 
 
+                <div className="todoList_list">
+                    <ul className="todoList_tab">
+                        <li>
+                            <a className={selectedTab === "全部" ? "active" : ""}
+                               onClick={(e) => {
+                                setSelectedTab("全部");
+                               }}>全部</a>
+                        </li>
+                        <li>
+                            <a className={selectedTab === "待完成" ? "active" : ""}
+                               onClick={(e) => {
+                                setSelectedTab("待完成");
+                            }}>待完成</a>
+                        </li>
+                        <li>
+                            <a className={selectedTab === "已完成" ? "active" : ""}
+                               onClick={(e) => {
+                                setSelectedTab("已完成");
+                            }}>已完成</a>
                         </li>
                     </ul>
-                ))}
+                    <div className="todoList-item">
+                        <ul className="todoList_item" >
+                            {todos && todos.map((todo, index) => {
+                                if (selectedTab === "全部" || (selectedTab === "待完成" && !todo.status) || (selectedTab === "已完成" && todo.status)) {
+                                    return (
+                                        <li key={index}>
+                                            <label className="todoList_label">
+                                            <input className="todoList_input" checked={todo.status} type="checkbox" id={todo.id} 
+                                                onChange={() => {toggleStatus(todo.id)}}/>
+                                            </label>
+                                            <span>{todo.content}</span>
 
+                                            <input type="text" placeholder="更新資料" onChange={(e) => {
+                                            const newTodoEdit = {
+                                                ...todoEdit
+                                                }
+                                                newTodoEdit[todo.id] = e.target.value;
+                                                setTodoEdit(newTodoEdit)
+                                            }}/>
+                                            <button className="btn" onClick={() => updateTodo(todo.id)}>更新</button>
+                                            <button className="btn" onClick={() => toggleStatus(todo.id)}>已完成</button>
+                                            <button className="btn" onClick={() => deleteTodo(todo.id)}>移除</button>
+                                        </li>
+                                    )
+                                }
 
-            {/* <button onClick={checkTodo}>檢查 todo</button> */}
+                            })
+                        }
+                        </ul>
+                        <div className="todoList_statistics">
+                            <p>{finishTodo.length} 個已完成項目</p>
+                            <a onClick={clearCompletedTodos}>清除已完成項目</a>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
         </>
     )
 }

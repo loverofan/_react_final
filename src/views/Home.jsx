@@ -1,9 +1,17 @@
-import { Outlet, NavLink } from "react-router-dom"
+import { Outlet, NavLink, useNavigate, Route } from "react-router-dom"
 import SignIn from "../components/SignIn"
 import SignUp from "../components/SignUp"
 
 
+
 function Home() {
+
+    const navigate = useNavigate();
+
+    const goToSignUp = () => {
+        navigate('/sign_up');
+    }
+
     return (
         <>
             <div className="conatiner loginPage vhContainer">
@@ -14,6 +22,7 @@ function Home() {
                     <img src="../public/images/todo-bg.png" alt="" />
                 </div>
                 <Outlet />
+
             </div>
 
         </>

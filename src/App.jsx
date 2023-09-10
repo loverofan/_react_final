@@ -11,6 +11,7 @@ import Home from './views/Home';
 import About from './views/About';
 import Auth from './views/Auth';
 import './assets/styles/styles.scss';
+import NotFound from './views/NotFound';
 
 
 
@@ -36,47 +37,20 @@ function App() {
       <div className="bg-yellow">
         <Routes>
         <Route path='/' element={<Home />} >
-          
+          <Route path='/' element={<SignIn server={server} onChangeToken={handleChangeToken} />} />
           <Route path='/sign_up' element={<SignUp server={server} />} />
-          <Route path='/sign_in' element={<SignIn server={server} onChangeToken={handleChangeToken} />} />
         </Route>
 
           <Route path='/auth' element={<Auth />} >
+          <Route path='/auth/check_token' element={<CheckToken server={server} onChangeToken={handleChangeToken} />} />
             <Route path='/auth/todo' element={<TodoList server={server} token={token} />} />
           </Route>
-          {/* <Route path='sign_in' element={<SignIn server={server} onChangeToken={handleChangeToken} />} /> */}
-          {/* <Route path='check_token' element={<CheckToken server={server} onChangeToken={handleChangeToken} />} /> */}
-        {/* </Route> */}
+
+          <Route path='*' element={<NotFound />} />
 
       </Routes>
       </div>
-
-
-
-    {/* <Routes>
-      <Route path='/' element={<Home />} />
-      <Route path='sign_up' element={<SignUp server={server} />} />
-      <Route path='sign_in' element={<SignIn server={server} onChangeToken={handleChangeToken} />} />
-      
-      <Route path='/about' element={<About />} />
-      <Route path='/auth' element={<Auth />}>
-      <Route path='sign_in' element={<SignIn server={server} onChangeToken={handleChangeToken} />} />
-      <Route path='check_token' element={<CheckToken server={server} onChangeToken={handleChangeToken} />} />
-      <Route path='todo' element={<TodoList server={server} token={token} />} />
-      </Route>
-      
-    </Routes> */}
-      {/* <hr />
-        <SignUp server={server} />
-        <hr />
-        <SignIn server={server} onChangeToken={handleChangeToken} />
-        <hr />
-        <CheckToken server={server} onChangeToken={handleChangeToken} />
-        <hr />
-        <SignOut server={server} token={token} onTokenUpdate={handleChangeToken} />
-        <hr />
-      <TodoList server={server} token={token} /> */}
-      </div>
+    </div>
     </>
   )
 }

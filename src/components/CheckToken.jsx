@@ -12,15 +12,23 @@ function CheckToken({server, onChangeToken}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-      console.log(`驗證成功, UID: ${uid}`, `isTokenValid: ${isTokenValid}`);
-    }, [isTokenValid, uid]);
+      const cookieValue = document.cookie
+        .split(';')
+        .find((row) => row.startsWith('hexschoolToken'))
+        ?.split('=')[1];
+        // console.log("cookieValue===>", cookieValue);
+    }, []);
+
+    // useEffect(() => {
+    //   console.log(`驗證成功, UID: ${uid}`, `isTokenValid: ${isTokenValid}`);
+    // }, [isTokenValid, uid]);
 
   
     const checkTokenValid = async () => {
   
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() +1);
-      document.cookie = `hexschoolTodo=${token}; expires=${tomorrow.toUTCString()}`;
+      // document.cookie = `hexschoolTodo=${token}; expires=${tomorrow.toUTCString()}`;
       // console.log(
       //   document.cookie
       //   .split('; ')
@@ -37,9 +45,9 @@ function CheckToken({server, onChangeToken}) {
           const successMessage = `驗證成功, UID: ${res.data.uid}`;
           setIsTokenValid(true);
           SetMessage(successMessage);
-          setUid(res.data.uid)
+          setUid(res.data.uid);
           onChangeToken(token);
-          navigate('../todo')
+          // navigate('../todo');
         }
       } catch (error) {
         const errorMessage = `驗證失敗, 詳細訊息: ${error.message}`;

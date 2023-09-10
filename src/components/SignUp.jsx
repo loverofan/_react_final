@@ -46,7 +46,7 @@ function SignUp({server}) {
         SetMessage(successMessage);
         console.log("signUpData==>", signUpData);
         alert('註冊成功');
-        navigate('../sign_in');
+        navigate('..'); // to todos
         
       } catch (error) {
         console.warn(error.response.data); // check error in console
@@ -84,7 +84,7 @@ function SignUp({server}) {
               <button className='formControls_btnSubmit' 
                       type="button"
                       onClick={signUp}>送出註冊</button>
-              <NavLink to="/sign_in" className='formControls_btnLink'>
+              <NavLink to=".." className='formControls_btnLink'>
                      已有帳號
               </NavLink>
               {/* <p>{message}</p> */}
