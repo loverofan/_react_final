@@ -1,9 +1,7 @@
-
-
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 
 function SignIn({server, onChangeToken}) {
@@ -12,9 +10,14 @@ function SignIn({server, onChangeToken}) {
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
     const [message, SetMessage] = useState('');
+
     const [hasSignIn, setHasSignIn] = useState(false);
+    const [isLoading, setisLoading] = useState(false) // status
+
+
     const signInAPI = `${server}/users/sign_in`;
     const navigate = useNavigate();
+
 
     // qqqq@ggg.com
     // 123456
@@ -33,6 +36,7 @@ function SignIn({server, onChangeToken}) {
 
     const signIn = async () => {
         try {
+            setisLoading(true);
             const res = await axios.post((signInAPI), signInData);
 
             const successMessage = res.data.status ? '登入成功!' : '登入失敗';
@@ -43,34 +47,46 @@ function SignIn({server, onChangeToken}) {
             setHasSignIn(true);
 
             onChangeToken(token);
-            navigate('../check_token');
+            document.cookie = `hexschoolToken=${res.data.token}`;
+            setTimeout(() => {
+                setisLoading(false)
+            }, 500)
+            // navigate('../check_token');
+            navigate('../auth/todo');
+
 
         } catch (error) {
           console.warn(error.response.data); // check error in console
           const errorMessage = `登入失敗: ${error.message}`;
           SetMessage(errorMessage);
+          setTimeout(() => {
+            setisLoading(false)
+        }, 500)
         }
     }
 
     return(
-        <>
-            <h1>登入</h1>
-            <form action="">
+        <form className='formControls'>
+            <h2 className='formControls_txt'>最實用的線上代辦事項服務</h2>
+            <label htmlFor="signInEmail" className='formControls_label'>Email</label>
+            <input type="email" className='formControls_input' id='signInEmail' name='email' placeholder='請輸入Email' 
+                onChange={HandleChange}/>
+            {signInData.email.length < 1 && <p className="error-message">此欄位不可為空</p>}
 
-            <label htmlFor="signInEmail" className='badge'>Email</label>
-            <input type="email" id='signInEmail' name='email' placeholder='Email' 
-                   onChange={HandleChange}/>
+            <label htmlFor="signInPassword" className='formControls_label' >密碼</label>
+            <input type="password" className='formControls_input' id='signInPassword' name='password' placeholder='請輸入密碼' 
+                onChange={HandleChange}/>
 
-            <label htmlFor="signInPassword" className='badge' >Password</label>
-            <input type="password" id='signInPassword' name='password' placeholder='Password' 
-                   onChange={HandleChange}/>
-
-            <button className='btn btn-primary' type='button' 
+            <button className='formControls_btnSubmit' type='button' 
+                    disabled={isLoading}
                     onClick={signIn}>登入</button>
-            <p>{message}</p>
-            {hasSignIn ? <p> Token: {token} </p> : null }
-            </form>
-        </>
+            <NavLink to="/sign_up" className='formControls_btnLink'>
+                註冊帳號
+            </NavLink>
+            {/* <p>{message}</p> */}
+            {/* {hasSignIn ? <p> Token: {token} </p> : null } */}
+            
+        </form>
     )
 }
 
